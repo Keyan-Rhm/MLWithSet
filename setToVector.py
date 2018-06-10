@@ -12,7 +12,6 @@ import glob
 from PIL import Image
 
 def binarify(x):
-
   index = 0
   while index < len(x):
     if (x[index] == 0 or x[index] == 1):
@@ -22,6 +21,11 @@ def binarify(x):
       x[index] = 1
       x.insert(index + 1, 0)
       index += 2
+
+def normalize(x):
+  for index, val in enumerate(x):
+    x[index] = val/2
+
 
 class TestCallback(Callback):
   def __init__(self, test_data):
@@ -38,6 +42,7 @@ with open("dataset.txt") as textFile:
 
 for vector in setVectors:
   binarify(vector)
+# normalize(vector)
 
 filelist = glob.glob('Dataset/*')
 setImages = np.array([np.array(Image.open(fname)) for fname in filelist[:400]])
@@ -70,6 +75,7 @@ set2vec.add(Dense(units=512, activation='relu'))
 
 set2vec.add(Dropout(rate=0.5))
 
+#set2vec.add(Dense(units=12, activation='softmax'))
 set2vec.add(Dense(units=24, activation='softmax'))
 
 set2vec.compile(optimizer = 'adam', loss = 'mean_squared_error', metrics = ['accuracy'])
